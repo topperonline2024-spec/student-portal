@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--tg-theme-bg-color, #f4f4f5);
+      color: var(--tg-theme-text-color, #000000);
+      margin: 0; padding: 15px;
+    }
+    .card {
+      background-color: var(--tg-theme-secondary-bg-color, #ffffff);
+      border-radius: 12px; padding: 15px; margin-bottom: 15px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    h2 { margin-top: 0; font-size: 18px; color: var(--tg-theme-text-color); }
+    .row { margin-bottom: 10px; font-size: 14px; }
+    .label { font-weight: bold; color: var(--tg-theme-hint-color, #888); }
+    .btn {
+      display: block; width: 100%; box-sizing: border-box;
+      background-color: var(--tg-theme-button-color, #3390ec);
+      color: var(--tg-theme-button-text-color, #ffffff);
+      padding: 12px; border-radius: 8px; text-align: center;
+      text-decoration: none; font-weight: bold; margin-top: 10px;
+    }
+    .btn.disabled {
+      background-color: var(--tg-theme-hint-color, #888);
+      pointer-events: none; opacity: 0.7;
+    }
+    .badge {
+      display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; float: right;
+    }
+    .approved { background: #e6f4ea; color: #1e8e3e; }
+    .pending { background: #fef7e0; color: #f29900; }
+    .expired { background: #fce8e6; color: #d93025; }
+    #loader { text-align: center; margin-top: 50px; font-weight: bold; color: var(--tg-theme-hint-color); }
+  </style>
+</head>
+<body>
+  <div id="loader">Loading your secure profile...</div>
+  
+  <div id="content" style="display:none;">
+    <div class="card">
+      <h2>👤 My Profile</h2>
+      <div class="row"><span class="label">Name:</span> <span id="s-name"></span></div>
+      <div class="row"><span class="label">Gmail:</span> <span id="s-gmail"></span></div>
+      <div class="row"><span class="label">Zoom:</span> <span id="s-zoom"></span></div>
+      <div class="row"><span class="label">Status:</span> <span id="s-status"></span></div>
+    </div>
+
+    <div class="card">
+      <h2>📊 Overall Attendance</h2>
+      <div class="row" style="font-size: 28px; font-weight: bold; text-align: center; color: var(--tg-theme-button-color);">
+        <span id="s-att"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🎥 Recording Requests</h2>
+      <div id="recordings-list"></div>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    // Directly reads Telegram user identity without iframe issues
+    const user = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
+    const chatId = user ? user.id : "";
+
+    const SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbzAufKn4e8vT2Ysr2wnXQ9YH1j7DCrF2pkkBrOkh1Vqle8u2CUWORrN5QB01kPsuJdsMA/exec"; // Paste your Google Apps Script Web App URL here
+
+    if (chatId) {
+      fetch(`${SCRIPT_API_URL}?chatId=${chatId}`)
+        .then(res => res.json())
+        .then(data => displayData(data))
+        .catch(err => {
+          document.getElementById('loader').innerText = "Failed to load data. Please try again.";
+        });
+    } else {
+      document.getElementById('loader').innerText = "Security Error: Please open this portal directly inside the Telegram Bot.";
+    }
+
+    function displayData(data) {
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('content').style.display = 'block';
+
+      if (!data.success) {
+        document.getElementById('content').innerHTML = "<div class='card'>⛔️ Account not found or pending registration.</div>";
+        return;
+      }
+
+      document.getElementById('s-name').innerText = data.name;
+      document.getElementById('s-gmail').innerText = data.gmail;
+      document.getElementById('s-zoom').innerText = data.zoomEmail;
+      document.getElementById('s-status').innerText = data.status;
+      document.getElementById('s-att').innerText = data.attendance;
+
+      const recContainer = document.getElementById('recordings-list');
+      if (!data.recordings || data.recordings.length === 0) {
+        recContainer.innerHTML = "<div class='row'>No recording requests found.</div>";
+      } else {
+        let html = "";
+        data.recordings.forEach(r => {
+          let badgeClass = 'pending';
+          let statusText = r.status;
+          if (r.status === 'Approved') badgeClass = 'approved';
+          if (r.isExpired) {
+             badgeClass = 'expired';
+             statusText = 'Expired';
+          }
+
+          html += `<div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">`;
+          html += `<div class="row"><span class="label">Class Date:</span> ${r.date} <span class="badge ${badgeClass}">${statusText}</span></div>`;
+
+          if (r.status === 'Approved' && !r.isExpired && r.url) {
+            html += `<div class="row"><span class="label">Deadline:</span> ${r.deadline}</div>`;
+            html += `<a href="${r.url}" class="btn" target="_blank">Watch Recording</a>`;
+          } else if (r.status === 'Approved' && r.isExpired) {
+            html += `<a href="#" class="btn disabled">Access Expired</a>`;
+          }
+          html += `</div>`;
+        });
+        recContainer.innerHTML = html;
+      }
+    }
+  </script>
+</body>
+</html>
