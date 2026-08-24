@@ -1,131 +1,525 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>TOPPER Student Portal</title>
+  <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
   <style>
+    :root {
+      --bg-dark: #0b1120;
+      --card-bg: #151f32;
+      --card-border: #1e293b;
+      --accent-blue: #38bdf8;
+      --accent-navy: #1e40af;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--tg-theme-bg-color, #f4f4f5);
-      color: var(--tg-theme-text-color, #000000);
-      margin: 0; padding: 15px;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      margin: 0;
+      padding: 0;
+      padding-bottom: 75px;
+      overflow-x: hidden;
     }
+
+    /* Top Banner Bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 18px;
+      background: linear-gradient(180deg, #111a2e 0%, var(--bg-dark) 100%);
+      border-bottom: 1px solid var(--card-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent-blue);
+      background-color: #ffffff;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--accent-blue);
+      font-weight: 500;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-approved { background: rgba(34, 197, 94, 0.15); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.3); }
+    .status-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
+
+    /* Main Container */
+    .container {
+      padding: 16px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    /* Cards */
     .card {
-      background-color: var(--tg-theme-secondary-bg-color, #ffffff);
-      border-radius: 12px; padding: 15px; margin-bottom: 15px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
     }
-    h2 { margin-top: 0; font-size: 18px; color: var(--tg-theme-text-color); }
-    .row { margin-bottom: 10px; font-size: 14px; }
-    .label { font-weight: bold; color: var(--tg-theme-hint-color, #888); }
-    .btn {
-      display: block; width: 100%; box-sizing: border-box;
-      background-color: var(--tg-theme-button-color, #3390ec);
-      color: var(--tg-theme-button-text-color, #ffffff);
-      padding: 12px; border-radius: 8px; text-align: center;
-      text-decoration: none; font-weight: bold; margin-top: 10px;
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
-    .btn.disabled {
-      background-color: var(--tg-theme-hint-color, #888);
-      pointer-events: none; opacity: 0.7;
+
+    /* Attendance Mini Metric */
+    .att-meter-container {
+      margin-top: 10px;
     }
+
+    .att-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 6px;
+    }
+
+    .att-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--accent-blue);
+    }
+
+    .progress-bar-bg {
+      width: 100%;
+      height: 8px;
+      background-color: #0f172a;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2563eb, var(--accent-blue));
+      border-radius: 6px;
+      transition: width 0.8s ease-in-out;
+    }
+
+    /* Data Rows */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 13.5px;
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-label {
+      color: var(--text-muted);
+    }
+
+    .info-value {
+      font-weight: 500;
+      color: var(--text-main);
+      text-align: right;
+      word-break: break-all;
+    }
+
+    /* Recording List Items */
+    .recording-item {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 10px;
+    }
+
+    .rec-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .rec-date {
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
     .badge {
-      display: inline-block; padding: 4px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; float: right;
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-weight: 600;
     }
-    .approved { background: #e6f4ea; color: #1e8e3e; }
-    .pending { background: #fef7e0; color: #f29900; }
-    .expired { background: #fce8e6; color: #d93025; }
-    #loader { text-align: center; margin-top: 50px; font-weight: bold; color: var(--tg-theme-hint-color); }
+
+    .badge-approved { background: rgba(34, 197, 94, 0.15); color: var(--success); }
+    .badge-expired { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+    .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
+
+    /* Action Buttons */
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 11px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13.5px;
+      margin-top: 10px;
+      transition: opacity 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb 0%, var(--accent-blue) 100%);
+      color: #ffffff;
+    }
+
+    .btn-disabled {
+      background: #1e293b;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Bottom Nav Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: #0f172a;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      cursor: pointer;
+      gap: 4px;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--accent-blue);
+    }
+
+    .nav-item i {
+      font-size: 18px;
+    }
+
+    /* Unregistered State */
+    .unreg-container {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .unreg-icon {
+      font-size: 54px;
+      color: var(--warning);
+      margin-bottom: 16px;
+    }
+
+    /* Loading Spinner */
+    #loader {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 70vh;
+      color: var(--text-muted);
+      gap: 12px;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(56, 189, 248, 0.2);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
-  <div id="loader">Loading your secure profile...</div>
-  
-  <div id="content" style="display:none;">
-    <div class="card">
-      <h2>👤 My Profile</h2>
-      <div class="row"><span class="label">Name:</span> <span id="s-name"></span></div>
-      <div class="row"><span class="label">Gmail:</span> <span id="s-gmail"></span></div>
-      <div class="row"><span class="label">Zoom:</span> <span id="s-zoom"></span></div>
-      <div class="row"><span class="label">Status:</span> <span id="s-status"></span></div>
+
+  <!-- Top Banner Bar -->
+  <div class="top-bar">
+    <div class="brand-container">
+      <img src="logo.png" alt="TOPPER" class="brand-logo" onerror="this.src='topperLogo.jpeg'">
+      <div>
+        <div class="brand-title">TOPPER</div>
+        <div class="brand-sub">Student Portal</div>
+      </div>
+    </div>
+    <div id="top-status-badge" class="status-badge status-approved" style="display:none;">
+      <i class="fa-solid fa-circle-check"></i> <span id="s-status-top">Active</span>
+    </div>
+  </div>
+
+  <!-- Loading Screen -->
+  <div id="loader">
+    <div class="spinner"></div>
+    <div style="font-size: 13px;">Loading Student Data...</div>
+  </div>
+
+  <!-- App Views -->
+  <div id="content" style="display:none;" class="container">
+    
+    <!-- Tab 1: Dashboard View -->
+    <div id="tab-dashboard" class="tab-pane">
+      
+      <!-- Student Summary Card -->
+      <div class="card">
+        <div class="card-header">
+          <span>Student Information</span>
+          <i class="fa-solid fa-user-graduate" style="color: var(--accent-blue);"></i>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Full Name</span>
+          <span class="info-value" id="s-name">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Zoom Email</span>
+          <span class="info-value" id="s-zoom">-</span>
+        </div>
+        <div class="info-row">
+          <span class="info-label">Drive Gmail</span>
+          <span class="info-value" id="s-gmail">-</span>
+        </div>
+      </div>
+
+      <!-- Subtle Attendance Metric -->
+      <div class="card">
+        <div class="card-header">
+          <span>Course Attendance</span>
+          <i class="fa-solid fa-chart-simple" style="color: var(--accent-blue);"></i>
+        </div>
+        <div class="att-meter-container">
+          <div class="att-flex">
+            <span style="font-size: 12px; color: var(--text-muted);">Overall Score</span>
+            <span class="att-value" id="s-att">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div id="att-fill" class="progress-bar-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="card">
-      <h2>📊 Overall Attendance</h2>
-      <div class="row" style="font-size: 28px; font-weight: bold; text-align: center; color: var(--tg-theme-button-color);">
-        <span id="s-att"></span>
+    <!-- Tab 2: Recordings View -->
+    <div id="tab-recordings" class="tab-pane" style="display:none;">
+      <div class="card">
+        <div class="card-header">
+          <span>Approved Recordings</span>
+          <i class="fa-solid fa-video" style="color: var(--accent-blue);"></i>
+        </div>
+        <div id="recordings-list"></div>
       </div>
     </div>
 
-    <div class="card">
-      <h2>🎥 Recording Requests</h2>
-      <div id="recordings-list"></div>
+  </div>
+
+  <!-- Unregistered Screen (Fallback) -->
+  <div id="unregistered-view" style="display:none;" class="container">
+    <div class="card unreg-container">
+      <i class="fa-solid fa-triangle-exclamation unreg-icon"></i>
+      <h3 style="margin-top: 0;">Account Not Registered</h3>
+      <p style="color: var(--text-muted); font-size: 13.5px; line-height: 1.5;">
+        Your Telegram account is not yet registered or approved in the TOPPER database.
+      </p>
+      <div style="background: #0f172a; padding: 12px; border-radius: 8px; font-size: 12.5px; color: var(--accent-blue); margin-top: 15px;">
+        Please return to the bot chat and complete registration or wait for admin approval.
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation Bar -->
+  <div class="bottom-nav">
+    <div class="nav-item active" onclick="switchTab('dashboard', this)">
+      <i class="fa-solid fa-house"></i>
+      <span>Home</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('recordings', this)">
+      <i class="fa-solid fa-play"></i>
+      <span>Recordings</span>
     </div>
   </div>
 
   <script>
+    // Initialize Telegram WebApp
     const tg = window.Telegram.WebApp;
-    tg.expand();
+    if (tg) {
+      tg.expand();
+      tg.ready();
+    }
 
-    // Directly reads Telegram user identity without iframe issues
+    // 1. YOUR APPS SCRIPT WEBHOOK URL
+    const API_URL = "https://script.google.com/macros/s/AKfycbxeYGB0E8AAYFpFU7DIpiqs3hQWdQa6I0fDENdHJ7y0AN1zy--KGMQ1xPCvkatYhlk/exec";
+
+    // 2. Extract Chat ID from Telegram
     const user = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
     const chatId = user ? user.id : "";
 
-    const SCRIPT_API_URL = "https://script.google.com/macros/s/AKfycbzAufKn4e8vT2Ysr2wnXQ9YH1j7DCrF2pkkBrOkh1Vqle8u2CUWORrN5QB01kPsuJdsMA/exec"; // Paste your Google Apps Script Web App URL here
-
+    // 3. Fetch Data from API
     if (chatId) {
-      fetch(`${SCRIPT_API_URL}?chatId=${chatId}`)
+      fetch(`${API_URL}?chatId=${chatId}`)
         .then(res => res.json())
-        .then(data => displayData(data))
+        .then(data => renderApp(data))
         .catch(err => {
-          document.getElementById('loader').innerText = "Failed to load data. Please try again.";
+          document.getElementById('loader').innerHTML = "<div style='color:var(--danger);'>Failed to load data. Please re-open the app.</div>";
         });
     } else {
-      document.getElementById('loader').innerText = "Security Error: Please open this portal directly inside the Telegram Bot.";
+      document.getElementById('loader').style.display = 'none';
+      document.getElementById('unregistered-view').style.display = 'block';
     }
 
-    function displayData(data) {
+    // 4. Render Interface
+    function renderApp(data) {
       document.getElementById('loader').style.display = 'none';
-      document.getElementById('content').style.display = 'block';
 
       if (!data.success) {
-        document.getElementById('content').innerHTML = "<div class='card'>⛔️ Account not found or pending registration.</div>";
+        document.getElementById('unregistered-view').style.display = 'block';
         return;
       }
 
-      document.getElementById('s-name').innerText = data.name;
-      document.getElementById('s-gmail').innerText = data.gmail;
-      document.getElementById('s-zoom').innerText = data.zoomEmail;
-      document.getElementById('s-status').innerText = data.status;
-      document.getElementById('s-att').innerText = data.attendance;
+      document.getElementById('content').style.display = 'block';
+      document.getElementById('top-status-badge').style.display = 'flex';
 
+      // Fill Profile Details
+      document.getElementById('s-name').innerText = data.name || "N/A";
+      document.getElementById('s-zoom').innerText = data.zoomEmail || "N/A";
+      document.getElementById('s-gmail').innerText = data.gmail || "N/A";
+      document.getElementById('s-status-top').innerText = data.status || "Active";
+
+      // Fill Attendance & Animate Bar
+      const attVal = data.attendance || "0.0%";
+      document.getElementById('s-att').innerText = attVal;
+      const numVal = parseFloat(attVal) || 0;
+      setTimeout(() => {
+        document.getElementById('att-fill').style.width = `${Math.min(numVal, 100)}%`;
+      }, 200);
+
+      // Render Recordings
       const recContainer = document.getElementById('recordings-list');
       if (!data.recordings || data.recordings.length === 0) {
-        recContainer.innerHTML = "<div class='row'>No recording requests found.</div>";
+        recContainer.innerHTML = "<div style='color:var(--text-muted); font-size:13px; text-align:center; padding:10px;'>No recording requests on file.</div>";
       } else {
         let html = "";
         data.recordings.forEach(r => {
-          let badgeClass = 'pending';
+          let badgeClass = 'badge-pending';
           let statusText = r.status;
-          if (r.status === 'Approved') badgeClass = 'approved';
+          
+          if (r.status === 'Approved') badgeClass = 'badge-approved';
           if (r.isExpired) {
-             badgeClass = 'expired';
-             statusText = 'Expired';
+            badgeClass = 'badge-expired';
+            statusText = 'Expired';
           }
 
-          html += `<div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px;">`;
-          html += `<div class="row"><span class="label">Class Date:</span> ${r.date} <span class="badge ${badgeClass}">${statusText}</span></div>`;
+          html += `
+            <div class="recording-item">
+              <div class="rec-top">
+                <div class="rec-date"><i class="fa-regular fa-calendar-days" style="margin-right:6px; color:var(--accent-blue);"></i>${r.date}</div>
+                <span class="badge ${badgeClass}">${statusText}</span>
+              </div>
+          `;
 
           if (r.status === 'Approved' && !r.isExpired && r.url) {
-            html += `<div class="row"><span class="label">Deadline:</span> ${r.deadline}</div>`;
-            html += `<a href="${r.url}" class="btn" target="_blank">Watch Recording</a>`;
+            html += `
+              <div style="font-size:12px; color:var(--text-muted); margin-bottom:6px;">
+                <i class="fa-regular fa-clock" style="margin-right:4px;"></i>Deadline: <span style="color:var(--text-main); font-weight:600;">${r.deadline}</span>
+              </div>
+              <a href="${r.url}" class="btn btn-primary" target="_blank"><i class="fa-solid fa-play" style="margin-right:6px;"></i>Watch Recording</a>
+            `;
           } else if (r.status === 'Approved' && r.isExpired) {
-            html += `<a href="#" class="btn disabled">Access Expired</a>`;
+            html += `<div class="btn btn-disabled"><i class="fa-solid fa-lock" style="margin-right:6px;"></i>Access Expired</div>`;
           }
+
           html += `</div>`;
         });
         recContainer.innerHTML = html;
+      }
+    }
+
+    // 5. Tab Switching Logic
+    function switchTab(tabName, el) {
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+      el.classList.add('active');
+
+      if (tabName === 'dashboard') {
+        document.getElementById('tab-dashboard').style.display = 'block';
+        document.getElementById('tab-recordings').style.display = 'none';
+      } else {
+        document.getElementById('tab-dashboard').style.display = 'none';
+        document.getElementById('tab-recordings').style.display = 'block';
       }
     }
   </script>
