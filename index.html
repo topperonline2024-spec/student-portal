@@ -422,9 +422,9 @@
       tg.ready();
     }
 
-    // 1. YOUR APPS SCRIPT WEBHOOK URL
-    const API_URL = "https://script.google.com/macros/s/AKfycbxeYGB0E8AAYFpFU7DIpiqs3hQWdQa6I0fDENdHJ7y0AN1zy--KGMQ1xPCvkatYhlk/exec";
-
+    // 1. APPS SCRIPT WEBHOOK URL
+    // const API_URL = "https://script.google.com/macros/s/AKfycbxeYGB0E8AAYFpFU7DIpiqs3hQWdQa6I0fDENdHJ7y0AN1zy--KGMQ1xPCvkatYhlk/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbzAufKn4e8vT2Ysr2wnXQ9YH1j7DCrF2pkkBrOkh1Vqle8u2CUWORrN5QB01kPsuJdsMA/exec"
     // 2. Extract Chat ID from Telegram
     const user = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
     const chatId = user ? user.id : "";
