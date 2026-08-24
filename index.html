@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>TOPPER Student Portal</title>
-  <!-- Telegram Web App SDK -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   
@@ -22,290 +21,60 @@
       --danger: #ef4444;
     }
 
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-      user-select: none;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      margin: 0;
-      padding: 0;
-      padding-bottom: 75px;
-      overflow-x: hidden;
-    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-dark); color: var(--text-main); margin: 0; padding: 0; padding-bottom: 75px; overflow-x: hidden; }
 
     /* Top Banner Bar */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 18px;
-      background: linear-gradient(180deg, #111a2e 0%, var(--bg-dark) 100%);
-      border-bottom: 1px solid var(--card-border);
-      position: sticky;
-      top: 0;
-      z-index: 50;
-    }
-
-    .brand-container {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-logo {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent-blue);
-      background-color: #ffffff;
-    }
-
-    .brand-title {
-      font-size: 16px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: #ffffff;
-    }
-
-    .brand-sub {
-      font-size: 11px;
-      color: var(--accent-blue);
-      font-weight: 500;
-    }
-
-    .status-badge {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
+    .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: linear-gradient(180deg, #111a2e 0%, var(--bg-dark) 100%); border-bottom: 1px solid var(--card-border); position: sticky; top: 0; z-index: 50; }
+    .brand-container { display: flex; align-items: center; gap: 12px; }
+    .brand-logo { width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-blue); background-color: #ffffff; }
+    .brand-title { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; color: #ffffff; }
+    .brand-sub { font-size: 11px; color: var(--accent-blue); font-weight: 500; }
+    .status-badge { font-size: 11px; padding: 4px 10px; border-radius: 20px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
     .status-approved { background: rgba(34, 197, 94, 0.15); color: var(--success); border: 1px solid rgba(34, 197, 94, 0.3); }
     .status-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); border: 1px solid rgba(245, 158, 11, 0.3); }
 
-    /* Main Container */
-    .container {
-      padding: 16px;
-      max-width: 480px;
-      margin: 0 auto;
-    }
-
+    .container { padding: 16px; max-width: 480px; margin: 0 auto; }
+    
     /* Cards */
-    .card {
-      background-color: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 18px;
-      margin-bottom: 14px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
-    }
-
-    .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 14px;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    /* Attendance Mini Metric */
-    .att-meter-container {
-      margin-top: 10px;
-    }
-
-    .att-flex {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 6px;
-    }
-
-    .att-value {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--accent-blue);
-    }
-
-    .progress-bar-bg {
-      width: 100%;
-      height: 8px;
-      background-color: #0f172a;
-      border-radius: 6px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #2563eb, var(--accent-blue));
-      border-radius: 6px;
-      transition: width 0.8s ease-in-out;
-    }
-
+    .card { background-color: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 18px; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25); }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; font-size: 14px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+    
     /* Data Rows */
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-      font-size: 13.5px;
-    }
-
-    .info-row:last-child {
-      border-bottom: none;
-      padding-bottom: 0;
-    }
-
-    .info-label {
-      color: var(--text-muted);
-    }
-
-    .info-value {
-      font-weight: 500;
-      color: var(--text-main);
-      text-align: right;
-      word-break: break-all;
-    }
+    .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 13.5px; }
+    .info-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .info-label { color: var(--text-muted); }
+    .info-value { font-weight: 500; color: var(--text-main); text-align: right; word-break: break-all; }
+    .schedule-time { color: var(--accent-blue); font-weight: 600; }
 
     /* Recording List Items */
-    .recording-item {
-      background: #0f172a;
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
-      padding: 14px;
-      margin-bottom: 10px;
-    }
-
-    .rec-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 8px;
-    }
-
-    .rec-date {
-      font-weight: 700;
-      font-size: 14px;
-      color: var(--text-main);
-    }
-
-    .badge {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-weight: 600;
-    }
-
+    .recording-item { background: #0f172a; border: 1px solid var(--card-border); border-radius: 12px; padding: 14px; margin-bottom: 10px; }
+    .rec-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .rec-date { font-weight: 700; font-size: 14px; color: var(--text-main); }
+    .badge { font-size: 11px; padding: 3px 8px; border-radius: 6px; font-weight: 600; }
     .badge-approved { background: rgba(34, 197, 94, 0.15); color: var(--success); }
     .badge-expired { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
     .badge-pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
 
     /* Action Buttons */
-    .btn {
-      display: block;
-      width: 100%;
-      text-align: center;
-      padding: 11px;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 13.5px;
-      margin-top: 10px;
-      transition: opacity 0.2s;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #2563eb 0%, var(--accent-blue) 100%);
-      color: #ffffff;
-    }
-
-    .btn-disabled {
-      background: #1e293b;
-      color: var(--text-muted);
-      pointer-events: none;
-    }
+    .btn { display: block; width: 100%; text-align: center; padding: 11px; border-radius: 10px; text-decoration: none; font-weight: 600; font-size: 13.5px; margin-top: 10px; transition: opacity 0.2s; }
+    .btn-primary { background: linear-gradient(135deg, #2563eb 0%, var(--accent-blue) 100%); color: #ffffff; }
+    .btn-disabled { background: #1e293b; color: var(--text-muted); pointer-events: none; }
 
     /* Bottom Nav Bar */
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 62px;
-      background: #0f172a;
-      border-top: 1px solid var(--card-border);
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .nav-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      cursor: pointer;
-      gap: 4px;
-      transition: color 0.2s;
-    }
-
-    .nav-item.active {
-      color: var(--accent-blue);
-    }
-
-    .nav-item i {
-      font-size: 18px;
-    }
+    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 62px; background: #0f172a; border-top: 1px solid var(--card-border); display: flex; justify-content: space-around; align-items: center; z-index: 100; }
+    .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 11px; color: var(--text-muted); cursor: pointer; gap: 4px; transition: color 0.2s; }
+    .nav-item.active { color: var(--accent-blue); }
+    .nav-item i { font-size: 18px; }
 
     /* Unregistered State */
-    .unreg-container {
-      text-align: center;
-      padding: 40px 20px;
-    }
-
-    .unreg-icon {
-      font-size: 54px;
-      color: var(--warning);
-      margin-bottom: 16px;
-    }
+    .unreg-container { text-align: center; padding: 40px 20px; }
+    .unreg-icon { font-size: 54px; color: var(--warning); margin-bottom: 16px; }
 
     /* Loading Spinner */
-    #loader {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 70vh;
-      color: var(--text-muted);
-      gap: 12px;
-    }
-
-    .spinner {
-      width: 36px;
-      height: 36px;
-      border: 3px solid rgba(56, 189, 248, 0.2);
-      border-top-color: var(--accent-blue);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    #loader { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 70vh; color: var(--text-muted); gap: 12px; }
+    .spinner { width: 36px; height: 36px; border: 3px solid rgba(56, 189, 248, 0.2); border-top-color: var(--accent-blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
@@ -342,35 +111,29 @@
           <span>Student Information</span>
           <i class="fa-solid fa-user-graduate" style="color: var(--accent-blue);"></i>
         </div>
-        <div class="info-row">
-          <span class="info-label">Full Name</span>
-          <span class="info-value" id="s-name">-</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Zoom Email</span>
-          <span class="info-value" id="s-zoom">-</span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Drive Gmail</span>
-          <span class="info-value" id="s-gmail">-</span>
-        </div>
+        <div class="info-row"><span class="info-label">Full Name</span><span class="info-value" id="s-name">-</span></div>
+        <div class="info-row"><span class="info-label">Zoom Email</span><span class="info-value" id="s-zoom">-</span></div>
+        <div class="info-row"><span class="info-label">Drive Gmail</span><span class="info-value" id="s-gmail">-</span></div>
       </div>
 
-      <!-- Subtle Attendance Metric -->
+      <!-- Schedule and Zoom Info Card -->
       <div class="card">
         <div class="card-header">
-          <span>Course Attendance</span>
-          <i class="fa-solid fa-chart-simple" style="color: var(--accent-blue);"></i>
+          <span>Class Schedule</span>
+          <i class="fa-solid fa-calendar-week" style="color: var(--accent-blue);"></i>
         </div>
-        <div class="att-meter-container">
-          <div class="att-flex">
-            <span style="font-size: 12px; color: var(--text-muted);">Overall Score</span>
-            <span class="att-value" id="s-att">0%</span>
-          </div>
-          <div class="progress-bar-bg">
-            <div id="att-fill" class="progress-bar-fill" style="width: 0%;"></div>
-          </div>
+        
+        <div id="schedule-list" style="margin-bottom: 15px;">
+          <!-- Schedule populated dynamically here -->
         </div>
+
+        <div class="card-header" style="border-top: 1px solid var(--card-border); padding-top: 15px; margin-top: 5px;">
+          <span>Zoom Meeting Info</span>
+          <i class="fa-solid fa-video" style="color: var(--success);"></i>
+        </div>
+        
+        <div class="info-row"><span class="info-label">Meeting ID</span><span class="info-value" id="s-meeting-id" style="letter-spacing: 1px; font-weight: 700;">-</span></div>
+        <div class="info-row"><span class="info-label">Passcode</span><span class="info-value" id="s-passcode">-</span></div>
       </div>
 
     </div>
@@ -415,27 +178,33 @@
   </div>
 
   <script>
-    // Initialize Telegram WebApp
     const tg = window.Telegram.WebApp;
-    if (tg) {
-      tg.expand();
-      tg.ready();
-    }
+    if (tg) { tg.expand(); tg.ready(); }
 
-    // 1. APPS SCRIPT WEBHOOK URL
-    // const API_URL = "https://script.google.com/macros/s/AKfycbxeYGB0E8AAYFpFU7DIpiqs3hQWdQa6I0fDENdHJ7y0AN1zy--KGMQ1xPCvkatYhlk/exec";
-    const API_URL = "https://script.google.com/macros/s/AKfycbzAufKn4e8vT2Ysr2wnXQ9YH1j7DCrF2pkkBrOkh1Vqle8u2CUWORrN5QB01kPsuJdsMA/exec"
+    const API_URL = "https://script.google.com/macros/s/AKfycbzAufKn4e8vT2Ysr2wnXQ9YH1j7DCrF2pkkBrOkh1Vqle8u2CUWORrN5QB01kPsuJdsMA/exec";
+
     // 2. Extract Chat ID from Telegram
-    const user = tg.initDataUnsafe && tg.initDataUnsafe.user ? tg.initDataUnsafe.user : null;
-    const chatId = user ? user.id : "";
+    let chatId = "";
+    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
+      chatId = tg.initDataUnsafe.user.id.toString();
+    }
 
     // 3. Fetch Data from API
     if (chatId) {
       fetch(`${API_URL}?chatId=${chatId}`)
-        .then(res => res.json())
+        .then(response => {
+          if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+          return response.json();
+        })
         .then(data => renderApp(data))
         .catch(err => {
-          document.getElementById('loader').innerHTML = "<div style='color:var(--danger);'>Failed to load data. Please re-open the app.</div>";
+          document.getElementById('loader').innerHTML = `
+            <div style="color:var(--danger); text-align:center; padding: 20px;">
+              <i class="fa-solid fa-circle-exclamation" style="font-size:32px; margin-bottom:10px;"></i>
+              <div>Failed to connect to database.</div>
+              <div style="font-size:11px; color:var(--text-muted); margin-top:6px;">Details: ${err.message}</div>
+            </div>
+          `;
         });
     } else {
       document.getElementById('loader').style.display = 'none';
@@ -460,13 +229,21 @@
       document.getElementById('s-gmail').innerText = data.gmail || "N/A";
       document.getElementById('s-status-top').innerText = data.status || "Active";
 
-      // Fill Attendance & Animate Bar
-      const attVal = data.attendance || "0.0%";
-      document.getElementById('s-att').innerText = attVal;
-      const numVal = parseFloat(attVal) || 0;
-      setTimeout(() => {
-        document.getElementById('att-fill').style.width = `${Math.min(numVal, 100)}%`;
-      }, 200);
+      // Fill Schedule Data
+      const schedContainer = document.getElementById('schedule-list');
+      if (data.schedule && data.schedule.length > 0) {
+        let sHtml = "";
+        data.schedule.forEach(item => {
+          sHtml += `<div class="info-row"><span class="info-label">${item.day}</span><span class="info-value schedule-time">${item.time}</span></div>`;
+        });
+        schedContainer.innerHTML = sHtml;
+      } else {
+        schedContainer.innerHTML = "<div style='color:var(--text-muted); font-size:13px;'>No schedule available.</div>";
+      }
+
+      // Fill Zoom Info
+      document.getElementById('s-meeting-id').innerText = data.meetingId || "N/A";
+      document.getElementById('s-passcode').innerText = data.passcode || "N/A";
 
       // Render Recordings
       const recContainer = document.getElementById('recordings-list');
